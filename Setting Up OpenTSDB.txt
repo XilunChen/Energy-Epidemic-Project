@@ -1,0 +1,99 @@
+1. Download Hortonworks Sandbox 1.3 and Compile OpenTSDB
+
+http://d1ekw1iaw660be.cloudfront.net/Hortonworks+Sandbox+1.3+VMware+RC6.ovacd
+
+yum clean all 
+yum --disablerepo="epel" update nss
+
+yum install autoconf automake gnuplot
+yum update
+
+git clone git://github.com/OpenTSDB/opentsdb.git
+
+export PATH=$PATH:/usr/jdk64/jdk1.6.0_31/bin
+
+cd opentsdb
+
+./build.sh
+
+cd build
+
+make install
+
+
+2. Sample tables
+
+cd /root/opentsdb
+
+env COMPRESSION=NONE HBASE_HOME=/usr/lib/hbase ./src/create_table.sh
+
+// edit opentsdb.conf
+--port=4242 --staticroot=/root/opentsdb/build/staticroot --cachedir=/tmp/tsd --zkbasedir=/hbase-unsecure
+tsdb tsd --zkbasedir=/hbase-unsecure
+
+tsdb tsd --auto-metric
+
+
+
+
+
+
+
+
+
+Mics.
+// Download and Configure Maven
+wget http://mirror.cc.columbia.edu/pub/software/apache/maven/maven-3/3.2.1/binaries/apache-maven-3.2.1-bin.tar.gz
+sudo tar xzf apache-maven-3.2.1-bin.tar.gz -C /usr/local
+cd /usr/local
+sudo ln -s apache-maven-3.2.1 maven
+
+//Edit the Maven Path
+sudo vi /etc/profile.d/maven.sh
+export M2_HOME=/usr/local/maven
+export PATH=${M2_HOME}/bin:${PATH}
+
+// Reboot
+
+// Compile Maven Rroject
+mvn clean package assembly:single
+
+
+
+// Hbase Shell Command
+http://wiki.apache.org/hadoop/Hbase/Shell
+
+
+
+// Download Mahout
+yum install mahout
+
+
+
+
+Update ambari.repo in /etc/yum.repo.d/ambari.repo
+
+[ambari-1.x]
+name=Ambari 1.x
+baseurl=http://public-repo-1.hortonworks.com/ambari/centos6/1.x/GA
+gpgcheck=1
+gpgkey=http://public-repo-1.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
+enabled=1
+priority=1
+
+[HDP-UTILS-1.1.0.15]
+name=Hortonworks Data Platform Utils Version - HDP-UTILS-1.1.0.15
+baseurl=http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.15/repos/centos6
+gpgcheck=0
+gpgkey=http://public-repo-1.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
+enabled=1
+priority=1
+
+[Updates-ambari-1.2.5.17]
+name=ambari-1.2.5.17 - Updates
+baseurl=http://public-repo-1.hortonworks.com/ambari/centos6/1.x/updates/1.2.5.17
+gpgcheck=1
+gpgkey=http://public-repo-1.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
+enabled=1
+priority=1
+
